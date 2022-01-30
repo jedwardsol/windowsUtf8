@@ -9,6 +9,7 @@ static_assert(__cplusplus > 202002L) ;   // Or /Zc:__cplusplus hasn't been speci
 
 #include <filesystem>
 #include <string>
+#include <fstream>
 
 #include "print.h"
 
@@ -27,12 +28,10 @@ void consoleDetails()
 
     print(L"Console codepage is : {}\n",    GetConsoleOutputCP());
 
-
     CONSOLE_FONT_INFOEX font{sizeof(font)};
     GetCurrentConsoleFontEx (console,FALSE,&font);
 
     print(L"Console typeface is : {}\n\n",font.FaceName);
-
 }
 
 
@@ -123,6 +122,9 @@ void createWithWindows()
     {
         print("CreateFileA failed {}\n",GetLastError());
     }
+
+    CloseHandle(file);
+
 }
 
 
@@ -164,6 +166,23 @@ void findWithFilesystem()
 }
 
 
+void createWithFstream()
+{
+    DeleteFileA(utf8Bytes(welshFileName));
+
+    std::ofstream   file{welshFileName};
+
+    if(!file)
+    {
+        print("ofstream failed\n");
+    }
+
+
+
+
+}
+
+
 int main()
 {
     SetConsoleOutputCP(CP_UTF8);
@@ -174,4 +193,11 @@ int main()
     createWithWindows();
     findWithWindows();
     findWithFilesystem();
+
+
+    createWithFstream();
+    findWithWindows();
+    findWithFilesystem();
+
+
 }
