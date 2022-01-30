@@ -104,15 +104,15 @@ auto findFilesW()
 }
 
 
+auto const welshFileName  = u8"_ỻ_.welsh"s;                      //   or   u8"\u1efb"s      
 
 
-void windowsAPI()
+void createWithWindows()
 {
-    auto const welsh  = u8"_ỻ_.welsh"s;                      //   or   u8"\u1efb"s      
 
-    DeleteFileA(utf8Bytes(welsh));
+    DeleteFileA(utf8Bytes(welshFileName));
 
-    auto file = CreateFileA(utf8Bytes(welsh),
+    auto file = CreateFileA(utf8Bytes(welshFileName),
                             FILE_ALL_ACCESS,
                             0,
                             nullptr,
@@ -122,29 +122,56 @@ void windowsAPI()
     if(file == INVALID_HANDLE_VALUE)
     {
         print("CreateFileA failed {}\n",GetLastError());
-        return;
     }
+}
+
+
+void findWithWindows()
+{
 
     auto names  = findFilesA();
     auto namesW = findFilesW();
 
     if(    names.size() != 1
-       ||  namesW.size() != 1
-       ||  namesW[0].size() != 9)
+       ||  namesW.size() != 1)
     {
-        print("Oops");
+        print("Wrong number of files\n");
     }
+    else if(namesW[0].size() != 9)
+    {
+        print("Wide name isn't {}  length is {}, not 9\n",utf8Bytes(welshFileName), namesW[0].size());
+    }
+    else if(names[0].size() != 11)
+    {
+        print("Utf8 name isn't {}  length is {}, not 11\n",utf8Bytes(welshFileName), namesW[0].size());
+    }
+    else
+    {
+        print( "FindFirstFile   found {}\n",names[0]);
+    }
+}
 
-    print( "Found utf8 {}\n",names[0]);
 
-
-    return;
+void findWithFilesystem()
+{
+    for(auto &entry : std::filesystem::directory_iterator{std::filesystem::current_path()})
+    {
+        if(entry.path().extension() == ".welsh")
+        {
+            print("std::filesystem found {}\n",entry.path().filename().string());
+        }
+    }
 }
 
 
 int main()
 {
+    SetConsoleOutputCP(CP_UTF8);
+
     consoleDetails();
     print();
-    windowsAPI();
+    
+    createWithWindows();
+    findWithWindows();
+    findWithFilesystem();
 }
