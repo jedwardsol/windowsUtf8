@@ -157,10 +157,14 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="console.cpp" />
+    <ClCompile Include="filesystem.cpp" />
+    <ClCompile Include="registry.cpp" />
     <ClCompile Include="utf8.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="print.h" />
+    <ClInclude Include="utf8.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="utf8.manifest" />
