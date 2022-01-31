@@ -103,7 +103,20 @@ auto findFilesW()
 }
 
 
-auto const welshFileName  = u8"_ỻ_.welsh"s;                      //   or   u8"\u1efb"s      
+void cleanFiles()
+{
+    auto names = findFilesW();
+
+    for(auto &name : names)
+    {
+        DeleteFileW(name.c_str());
+    }
+
+
+}
+
+
+auto const welshFileName      = u8"_ỻ_.welsh"s;                      //   or   u8"\u1efb"s      
 
 
 void createWithWindows()
@@ -176,12 +189,42 @@ void createWithFstream()
     {
         print("ofstream failed\n");
     }
+}
 
 
+
+void tryLong()
+{
+    auto const longWelshFileName  = u8"u8_ỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻ_.welsh"s;
+    auto const longWelshFileNameW =  L"L_ỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻỻ_.welsh"s;
+
+
+    print("Length of {} = u8:{}  L:{}\n",utf8Bytes(longWelshFileName),longWelshFileName.size(), longWelshFileNameW.size());   // 308
+
+
+    std::ofstream  u8{longWelshFileName};
+    std::ofstream  L{longWelshFileNameW};
+
+
+    if(!u8)
+    {
+        print("Create of u8 version failed\n");
+    }
+
+    if(!L)
+    {
+        print("Create of u8 version failed\n");
+    }
+
+    auto names = findFilesA();
+
+    for(auto &name : names)
+    {
+        print("Found {}\n",name);
+    }
 
 
 }
-
 
 int main()
 {
@@ -189,15 +232,20 @@ int main()
 
     consoleDetails();
     print();
+
+    cleanFiles();
     
     createWithWindows();
     findWithWindows();
     findWithFilesystem();
 
+    cleanFiles();
 
     createWithFstream();
     findWithWindows();
     findWithFilesystem();
 
+    cleanFiles();
 
+    tryLong();
 }
